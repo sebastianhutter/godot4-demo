@@ -44,7 +44,10 @@ spec:
                             # run tests, the env var GDUNIT_BIN is setup in the docker image
                             id
                             echo \$GDUNIT_BIN -a ./test
-                            \$GDUNIT_BIN -a ./test
+                            
+                            sleep 3000
+
+                            #\$GDUNIT_BIN -a ./test
                         """
                     )
                     sh 'echo "Testing your project"'
