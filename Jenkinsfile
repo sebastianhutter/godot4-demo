@@ -40,7 +40,7 @@ spec:
                     sh(
                         script: """
                             # start display server
-                            sudo Xvfb -ac \${DISPLAY} -screen 0 1280x1024x24 > /dev/null &
+                            #sudo Xvfb -ac \${DISPLAY} -screen 0 1280x1024x24 > /dev/null &
                             # run tests, the env var GDUNIT_BIN is setup in the docker image
                             id
                             echo \$GDUNIT_BIN -a ./test
