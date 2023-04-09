@@ -30,13 +30,13 @@ spec:
         stage('Test') {
             steps {
                 container('build-container') {
-                    sh(
-                        script: """
-                            # ensure reports folder is empty (auto created by gdunit4)
-                            rm -rf ./reports/*
-                            ls -lah
-                        """
-                    )
+                    // sh(
+                    //     script: """
+                    //         # ensure reports folder is empty (auto created by gdunit4)
+                    //         rm -rf ./reports/*
+                    //         ls -lah
+                    //     """
+                    // )
                     sh(
                         script: """
                             # start display server
@@ -44,6 +44,7 @@ spec:
                             # run tests, the env var GDUNIT_BIN is setup in the docker image
                             id
                             echo \$GDUNIT_BIN -a ./test
+                            \$GDUNIT_BIN -a ./test
                         """
                     )
                     sh 'echo "Testing your project"'
