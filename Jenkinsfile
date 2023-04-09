@@ -34,6 +34,7 @@ spec:
                         script: """
                             # ensure reports folder is empty (auto created by gdunit4)
                             rm -rf ./reports/*
+                            ls -lah
                         """
                     )
                     sh(
@@ -41,7 +42,7 @@ spec:
                             # start display server
                             sudo Xvfb -ac \${DISPLAY} -screen 0 1280x1024x24 > /dev/null &
                             # run tests, the env var GDUNIT_BIN is setup in the docker image
-                            \$GDUNIT_BIN -a ./test
+                            echo \$GDUNIT_BIN -a ./test
                         """
                     )
                     sh 'echo "Testing your project"'
