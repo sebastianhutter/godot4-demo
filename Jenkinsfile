@@ -15,6 +15,7 @@ spec:
       limits:
         memory: "1Gi"
         cpu: "1"
+        nvidia.com/gpu: 1
       requests:
         memory: "1Gi"
         cpu: "1"
