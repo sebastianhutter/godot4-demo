@@ -5,9 +5,9 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
-#  securityContext:
-#    runAsUser: 1000
-#    runAsGroup: 1000
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
   containers:
   - name: build-container
     image: sebastianhutter/godot-runner:main
@@ -17,12 +17,7 @@ spec:
     tty: true
     resources:
       limits:
-#        memory: "1Gi"
-#        cpu: "1"
         nvidia.com/gpu: 1
-#      requests:
-#        memory: "1Gi"
-#        cpu: "1"
 """
         }
     }
