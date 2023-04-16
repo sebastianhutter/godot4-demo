@@ -166,14 +166,15 @@ spec:
                                         default:
                                             throw new Exception ("Unknown platform")
                                     }
+                                    sh(
+                                        script: """
+                                            cat export_presets.cfg
+                                            mkdir -p build/\${PLATFORM}
+                                            \$GODOT_BIN --export-release "\${PLATFORM}" build/\${PLATFORM}/${fileName}
+                                        """
+                                    )
                                 }
-                                sh(
-                                    script: """
-                                        cat export_presets.cfg
-                                        mkdir -p build/\${PLATFORM}
-                                        \$GODOT_BIN --export-release "\${PLATFORM}" build/\${PLATFORM}/${fileName}
-                                    """
-                                )
+
                             }
                         }
                     }
