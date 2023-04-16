@@ -8,6 +8,8 @@ spec:
   securityContext:
     runAsUser: 1000
     runAsGroup: 1000
+    # required to mount snd
+    privileged: true
   containers:
   - name: build-container
     image: sebastianhutter/godot-runner:main
@@ -15,9 +17,18 @@ spec:
     command:
     - cat
     tty: true
+    volumeMounts:
+    - mountPath: /dev/snd
+      name: dev-snd
     resources:
       limits:
+        # https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/
+        # reserve nvidia graphics card in host
         nvidia.com/gpu: 1
+  volumes:
+  - name: dev-snd
+    hostPath:
+      path: /dev/snd
 """
         }
     }
@@ -25,6 +36,9 @@ spec:
         stage('Test') {
             steps {
                 container('build-container') {
+
+                    //  godot --export-release "ci-setup" /tmp/ci-setup
+
                     // sh(
                     //     script: """
                     //         # ensure reports folder is empty (auto created by gdunit4)
