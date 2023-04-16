@@ -137,17 +137,5 @@ spec:
                 }
             }
         }
-        stage('Build') {
-            when {
-                branch 'main'
-            }
-            steps {
-                container('build-container') {
-                    // Your deployment steps go here
-                    sh 'echo "Deploying your project"'
-                    sh 'sleep 3000'
-                }
-            }
-        }
     }
 }
