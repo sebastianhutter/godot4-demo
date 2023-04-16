@@ -153,7 +153,7 @@ spec:
                 stages {
                     stage('Build') {
                         steps {
-                            container('build-container')
+                            container('build-container') {
                                 script {
                                     def fileName = null
                                     switch(env.PLATFORM) {
