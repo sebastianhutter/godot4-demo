@@ -122,19 +122,17 @@ spec:
                         '''
                     )
                     sh(
-                        
-                        script: '''
-                           bash addons/gdUnit4/runtest.sh -a ./test
-                        '''
+                        script: 'bash addons/gdUnit4/runtest.sh -a ./test'
                     )
-                    
                 }
             }
             post {
                 always {
                     container('build-container') {
-                        junit '**/reports/report_1/**/results.xml',
-                        allowEmptyResults: true,
+                        junit(
+                            testResults: '**/reports/report_1/**/results.xml',
+                            allowEmptyResults: true,
+                        )
                     }
                 }
             }
