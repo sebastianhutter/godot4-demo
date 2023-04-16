@@ -147,7 +147,7 @@ spec:
                 axes {
                     axis {
                         name "PLATFORM"
-                        values "linux", "windows" 
+                        values "linux", //"windows" 
                     }
                 }
                 stages {
