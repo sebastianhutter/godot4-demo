@@ -55,6 +55,7 @@ rm -rf \"{temp_dir}\""
 pipeline {
     options { 
       disableConcurrentBuilds() 
+      buildDiscarder logRotator(artifactDaysToKeepStr: '10', artifactNumToKeepStr: '10', daysToKeepStr: '', numToKeepStr: '')
     }
     agent {
         kubernetes {
