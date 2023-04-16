@@ -124,19 +124,20 @@ spec:
                     sh(
                         
                         script: '''
-                            echo bash addons/gdUnit4/runtest.sh -a ./test
-                            sleep 3000
+                           bash addons/gdUnit4/runtest.sh -a ./test
                         '''
                     )
+                    
                 }
             }
-            // post {
-            //     always {
-            //         // container('build-container') {
-            //         //     junit '**/target/surefire-reports/TEST-*.xml'
-            //         // }
-            //     }
-            // }
+            post {
+                always {
+                    container('build-container') {
+                        junit '**/reports/report_1/**/results.xml',
+                        allowEmptyResults: true,
+                    }
+                }
+            }
         }
         stage('Build') {
             when {
@@ -146,6 +147,7 @@ spec:
                 container('build-container') {
                     // Your deployment steps go here
                     sh 'echo "Deploying your project"'
+                    sh 'sleep 3000'
                 }
             }
         }
