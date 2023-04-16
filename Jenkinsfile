@@ -171,10 +171,7 @@ spec:
                                     script: """
                                         cat export_presets.cfg
                                         mkdir -p build/\${PLATFORM}
-
-                                        echo \$GODOT_BIN --export-release "\${PLATFORM}" build/\${PLATFORM}\${fileName}
-
-                                        sleep 3000
+                                        \$GODOT_BIN --export-release "\${PLATFORM}" build/\${PLATFORM}/${fileName}
                                     """
                                 )
                             }
