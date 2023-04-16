@@ -110,7 +110,7 @@ spec:
                         script: 'mv export_presets.cfg export_presets.cfg.original'
                     )
                     writeFile(
-                        file: export_presets.cfg,
+                        file: 'export_presets.cfg',
                         text: export_template_gdunit4,
                         encoding: 'UTF-8'
                     )
