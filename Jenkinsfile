@@ -102,7 +102,6 @@ spec:
                 }
             }
         }
-        // execute gdunit4 tests
         stage('Test') {
             steps {
                 container('build-container') {
@@ -134,6 +133,53 @@ spec:
                             allowEmptyResults: true,
                         )
                     }
+                }
+            }
+        }
+        stage('Build on Platforms') {
+            when {
+                anyOf {
+                    tag "*"
+                    branch "main"
+                }
+            }
+            matrix {
+                axes {
+                    axis {
+                        name "PLATFORM"
+                        values "linux", "windows" 
+                    }
+                }
+                stages {
+                    stage('Build') {
+                        script {
+                            def fileName = null
+                            switch(env.PLATFORM) {
+                                case "linux":
+                                    fileName = "godot4-demo.bin";
+                                    break;
+                                case "windows":
+                                    fileName = "godot4-demo.exe";
+                                    break;
+                                default:
+                                    throw new Exception ("Unknown platform")
+                            }
+                        }
+                        sh(
+                            script: """
+                                mkdir -p build/\${PLATFORM}
+                                \$GODOT_BIN --export-release "\${PLATFORM}" build/\${PLATFORM}\${fileName}
+                            """
+                        )
+                    }
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts(
+                        artifacts: "build/**/*",
+                        fingerprint: true
+                    )
                 }
             }
         }
