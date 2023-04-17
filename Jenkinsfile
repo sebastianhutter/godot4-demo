@@ -146,6 +146,7 @@ spec:
                     sh( 
                         script: """
                             sudo Xvfb -ac \${DISPLAY} -screen 0 1280x1024x24 > /dev/null &
+                            sleep 3000
                         """
                     )
                 }
