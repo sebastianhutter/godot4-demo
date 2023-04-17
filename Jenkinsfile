@@ -199,9 +199,9 @@ spec:
             }
         }
         stage('Release') {
-            when {
-                tag "*"
-            }
+            // when {
+            //     tag "*"
+            // }
             environment {
                 PAT = credentials('github-machine-user-pat')
             }
@@ -217,7 +217,6 @@ spec:
                             '''
                         )
                     }
-
                 }
             }
         }
