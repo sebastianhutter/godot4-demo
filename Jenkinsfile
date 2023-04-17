@@ -253,12 +253,21 @@ spec:
             steps {
             // thanks to: https://medium.com/@systemglitch/continuous-integration-with-jenkins-and-github-release-814904e20776
                 container('github') {
+                    writeFile(
+                        file: 'release.py',
+                        text: github_release_py,
+                        encoding: 'UTF-8'
+                    )
                     sh(
                         script: '''
                             pip install --upgrade pip
                             pip install requests GitPython
                             apt-get update 
                             apt-get install -y git
+
+                            git config --global --add safe.directory $PWD
+
+                            # python goes here
 
                             sleep 3000
                             
@@ -267,6 +276,5 @@ spec:
                 }
             }
         }
-        
     }
 }
