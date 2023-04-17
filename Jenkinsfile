@@ -88,7 +88,7 @@ spec:
         # reserve nvidia graphics card in host
         nvidia.com/gpu: 1
   - name: github
-    image: python:3.11-slim
+    image: python:3.11
     command:
     - cat
     tty: true
