@@ -246,7 +246,8 @@ spec:
                 tag "*"
             }
             environment {
-                PAT = credentials('github-machine-user-pat')
+                GITHUB_PAT = credentials('github-machine-user-pat')
+                PAT = GITHUB_PAT_PSW
             }
             steps {
                 container('github') {
