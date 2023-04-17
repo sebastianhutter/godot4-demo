@@ -71,8 +71,6 @@ headers = dict(
 
 # Release details
 tag_name = os.getenv('TAG_NAME')
-print("que")
-print(tag_name)
 release_name = tag_name
 
 # create the release
@@ -82,8 +80,6 @@ payload=dict(
     generate_release_notes=True,
 )
 response = requests.post(url=releases_url, headers=headers, json=payload)
-print(response.json())
-print(response.text)
 
 assets_url = f'https://uploads.github.com/repos/{owner}/{repo}/releases/{response.json()["id"]}/assets'
 for item in pathlib.Path('build').glob('**/*'):
