@@ -51,6 +51,9 @@ kill $(pgrep -x -f \"{temp_dir}/{exe_name} {cmd_args}\")
 rm -rf \"{temp_dir}\""
 '''
 
+// python script to create github release
+github_release_py='''
+'''
 
 pipeline {
     options { 
@@ -84,6 +87,11 @@ spec:
         # https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/
         # reserve nvidia graphics card in host
         nvidia.com/gpu: 1
+  - name: github
+    image: python:3.11-slim
+    command:
+    - cat
+    tty: true
   volumes:
   - name: dev-snd
     hostPath:
@@ -190,44 +198,47 @@ spec:
                 }
             }
         }
-        // TODO: add git release
-        // stage('Release') {
-        //     when {
-        //         tag "*"
-        //     }
-        //     environment {
-        //         PAT = credentials('github-machine-user-pat')
-        //     }
-        //     steps {
-        //         // thanks to: https://medium.com/@systemglitch/continuous-integration-with-jenkins-and-github-release-814904e20776
-        //         steps {
-        //             sh(
-        //                 script: '''
-        //                     # Get the full message associated with this tag
-        //                     message="$(git for-each-ref refs/tags/$TAG_NAME --format='%(contents)')"
+        stage('Release') {
+            when {
+                tag "*"
+            }
+            environment {
+                PAT = credentials('github-machine-user-pat')
+            }
+            steps {
+                // thanks to: https://medium.com/@systemglitch/continuous-integration-with-jenkins-and-github-release-814904e20776
+                steps {
+                    container('github') {
+                        sh(
+                            script: '''
+                                // # Get the full message associated with this tag
+                                // message="$(git for-each-ref refs/tags/$TAG_NAME --format='%(contents)')"
 
-        //                     # Get the title and the description as separated variables
-        //                     name=$(echo "$message" | head -n1)
-        //                     description=$(echo "$message" | tail -n +3)
-        //                     description=$(echo "$description" | sed -z 's/\n/\\n/g') # Escape line breaks to prevent json parsing problems
+                                // # Get the title and the description as separated variables
+                                // name=$(echo "$message" | head -n1)
+                                // description=$(echo "$message" | tail -n +3)
+                                // description=$(echo "$description" | sed -z 's/\n/\\n/g') # Escape line breaks to prevent json parsing problems
 
-        //                     # Create a release
-        //                     release=$(curl -XPOST -H "Authorization:token $PAT" --data "{\"tag_name\": \"$TAG_NAME\", \"target_commitish\": \"main\", \"name\": \"$name\", \"body\": \"$description\", \"draft\": false, \"prerelease\": false}" https://api.github.com/repos/sebastianhutter/godot4-demo/releases)
-                            
-        //                     # Extract the id of the release from the creation response
-        //                     id=$(echo "$release" | sed -n -e 's/"id":\ \([0-9]\+\),/\1/p' | head -n 1 | sed 's/[[:blank:]]//g')
+                                // # Create a release
+                                // release=$(curl -XPOST -H "Authorization:token $PAT" --data "{\"tag_name\": \"$TAG_NAME\", \"target_commitish\": \"main\", \"name\": \"$name\", \"body\": \"$description\", \"draft\": false, \"prerelease\": false}" https://api.github.com/repos/sebastianhutter/godot4-demo/releases)
+                                
+                                // # Extract the id of the release from the creation response
+                                // id=$(echo "$release" | sed -n -e 's/"id":\ \([0-9]\+\),/\1/p' | head -n 1 | sed 's/[[:blank:]]//g')
 
-        //                     # Upload the artifact
-        //                     for a in $(find ./build/ -type f); do 
-        //                        curl -XPOST -H "Authorization:token $token" -H "Content-Type:application/octet-stream" --data-binary @$a https://uploads.github.com/repos/sebastianhutter/godot4-demo/releases/$id/assets?name=$(basename $a)
-                    
-        //                     done
-                            
-        //                 '''
-        //             )
-        //         }
-        //     }
-        // }
-        //
+                                // # Upload the artifact
+                                // for a in $(find ./build/ -type f); do 
+                                //    curl -XPOST -H "Authorization:token $token" -H "Content-Type:application/octet-stream" --data-binary @$a https://uploads.github.com/repos/sebastianhutter/godot4-demo/releases/$id/assets?name=$(basename $a)
+                        
+                                // done
+                                sleep 3000
+                                
+                            '''
+                        )
+                    }
+
+                }
+            }
+        }
+        
     }
 }
