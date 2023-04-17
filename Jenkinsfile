@@ -221,12 +221,6 @@ spec:
                                             \$GODOT_BIN --export-release "\${PLATFORM}" build/\${PLATFORM}/${fileName}
                                         """
                                     )
-                                    sh(
-                                        script: """
-                                            cd build/\${PLATFORM}
-                                            zip ../${fileName} 
-                                        """
-                                    )
                                 }
 
                             }
@@ -237,7 +231,7 @@ spec:
             post {
                 success {
                     archiveArtifacts(
-                        artifacts: "build/*.zip",
+                        artifacts: "build/**/*",
                         fingerprint: true
                     )
                 }
