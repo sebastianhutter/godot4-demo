@@ -53,6 +53,49 @@ rm -rf \"{temp_dir}\""
 
 // python script to create github release
 github_release_py='''
+import requests
+import json
+import os
+
+# GitHub repository details
+owner = "sebastianhutter"
+repo = "godot4-demo"
+
+# GitHub access token with "repo" scope
+access_token = os.getenv('PAT')
+
+# Release details
+tag_name = os.getenv('TAG_NAME')
+release_name = "Version 1.0.0"
+release_notes = "Release notes for version 1.0.0"
+
+# File to upload
+file_path = "/path/to/your/file.zip"
+
+# Create release
+url = f"https://api.github.com/repos/{owner}/{repo}/releases"
+headers = {"Authorization": f"Bearer {access_token}"}
+payload = {
+    "tag_name": tag_name,
+    "name": release_name,
+    "body": release_notes
+}
+response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+# Get release ID
+release_id = response.json()["id"]
+
+# Upload file to release
+url = f"https://uploads.github.com/repos/{owner}/{repo}/releases/{release_id}/assets?name={file_path.split('/')[-1]}"
+headers = {"Authorization": f"Bearer {access_token}"}
+with open(file_path, "rb") as f:
+    response = requests.post(url, headers=headers, data=f)
+
+if response.status_code == 201:
+    print("File uploaded successfully!")
+else:
+    print(f"Failed to upload file: {response.text}")
+
 '''
 
 pipeline {
@@ -212,7 +255,10 @@ spec:
                 container('github') {
                     sh(
                         script: '''
-                            
+                            pip install --upgrade pip
+                            pip install requests GitPython
+                            apt-get update 
+                            apt-get install -y git
 
                             sleep 3000
                             
