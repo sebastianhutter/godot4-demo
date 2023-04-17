@@ -167,7 +167,7 @@ spec:
                                     def fileName = null
                                     switch(env.PLATFORM) {
                                         case "linux":
-                                            fileName = "godot4-demo.bin";
+                                            fileName = "godot4-demo.linux.bin";
                                             break;
                                         case "windows":
                                             fileName = "godot4-demo.exe";
@@ -206,17 +206,15 @@ spec:
                 PAT = credentials('github-machine-user-pat')
             }
             steps {
-                // thanks to: https://medium.com/@systemglitch/continuous-integration-with-jenkins-and-github-release-814904e20776
-                steps {
-                    container('github') {
-                        sh(
-                            script: '''
-                                // done
-                                sleep 3000
-                                
-                            '''
-                        )
-                    }
+            // thanks to: https://medium.com/@systemglitch/continuous-integration-with-jenkins-and-github-release-814904e20776
+                container('github') {
+                    sh(
+                        script: '''
+                            // done
+                            sleep 3000
+                            
+                        '''
+                    )
                 }
             }
         }
