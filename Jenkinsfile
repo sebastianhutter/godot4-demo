@@ -212,7 +212,7 @@ spec:
                 container('github') {
                     sh(
                         script: '''
-                            [ip ]
+                            
 
                             sleep 3000
                             
