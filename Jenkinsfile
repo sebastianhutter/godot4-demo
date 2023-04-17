@@ -67,7 +67,6 @@ access_token = os.getenv('PAT')
 releases_url =  f'https://api.github.com/repos/{owner}/{repo}/releases'
 headers = dict(
     Authorization=f'Bearer {access_token}'
-    
 )
 
 # Release details
@@ -82,17 +81,11 @@ payload=dict(
 )
 response = requests.post(url=releases_url, headers=headers, json=payload)
 
-# Get release ID
-print(response.json())
-release_id = response.json()["id"]
-
+assets_url = f'https://uploads.github.com/repos/{owner}/{repo}/releases/{response.json()["id"]}/assets'
 for item in pathlib.Path('build').glob('**/*'):
     if item.is_file():
         with open(item, "rb") as f:
-
-            response = requests.post(url=f'{releases_url}/{release_id}/assets', headers=headers, data=f, params=dict(name=item.name))
-            print(response.json())
-            print(response.text)
+            response = requests.post(url=f'{assets_url}?name={item.name}', headers={**headers, **{'Content-Type': 'application/octet-stream'}}, data=f.read()) 
             if response.status_code == 201:
                 print("File uploaded successfully!")
             else:
@@ -245,14 +238,13 @@ spec:
             }
         }
         stage('Release') {
-            // when {
-            //     tag "*"
-            // }
+            when {
+                tag "*"
+            }
             environment {
                 PAT = credentials('github-machine-user-pat')
             }
             steps {
-            // thanks to: https://medium.com/@systemglitch/continuous-integration-with-jenkins-and-github-release-814904e20776
                 container('github') {
                     writeFile(
                         file: 'release.py',
@@ -263,11 +255,7 @@ spec:
                         script: '''
                             pip install --upgrade pip
                             pip install requests 
-
-                            # python goes here
-
-                            sleep 3000
-                            
+                            python release.py
                         '''
                     )
                 }
