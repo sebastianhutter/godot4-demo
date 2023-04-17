@@ -56,46 +56,47 @@ github_release_py='''
 import requests
 import json
 import os
+import pathlib
 
 # GitHub repository details
-owner = "sebastianhutter"
-repo = "godot4-demo"
+owner = 'sebastianhutter'
+repo = 'godot4-demo'
 
 # GitHub access token with "repo" scope
 access_token = os.getenv('PAT')
+releases_url =  f'https://api.github.com/repos/{owner}/{repo}/releases'
+headers = dict(
+    Authorization=f'Bearer {access_token}'
+    
+)
 
 # Release details
 tag_name = os.getenv('TAG_NAME')
-release_name = "Version 1.0.0"
-release_notes = "Release notes for version 1.0.0"
+release_name = tag_name
 
-# File to upload
-file_path = "/path/to/your/file.zip"
-
-# Create release
-url = f"https://api.github.com/repos/{owner}/{repo}/releases"
-headers = {"Authorization": f"Bearer {access_token}"}
-payload = {
-    "tag_name": tag_name,
-    "name": release_name,
-    "body": release_notes
-}
-response = requests.post(url, headers=headers, data=json.dumps(payload))
+# create the release
+payload=dict(
+    tag_name=tag_name,
+    name=release_name,
+    generate_release_notes=True,
+)
+response = requests.post(url=releases_url, headers=headers, json=payload)
 
 # Get release ID
+print(response.json())
 release_id = response.json()["id"]
 
-# Upload file to release
-url = f"https://uploads.github.com/repos/{owner}/{repo}/releases/{release_id}/assets?name={file_path.split('/')[-1]}"
-headers = {"Authorization": f"Bearer {access_token}"}
-with open(file_path, "rb") as f:
-    response = requests.post(url, headers=headers, data=f)
+for item in pathlib.Path('build').glob('**/*'):
+    if item.is_file():
+        with open(item, "rb") as f:
 
-if response.status_code == 201:
-    print("File uploaded successfully!")
-else:
-    print(f"Failed to upload file: {response.text}")
-
+            response = requests.post(url=f'{releases_url}/{release_id}/assets', headers=headers, data=f, params=dict(name=item.name))
+            print(response.json())
+            print(response.text)
+            if response.status_code == 201:
+                print("File uploaded successfully!")
+            else:
+                print(f"Failed to upload file: {response.text}")
 '''
 
 pipeline {
@@ -261,11 +262,7 @@ spec:
                     sh(
                         script: '''
                             pip install --upgrade pip
-                            pip install requests GitPython
-                            apt-get update 
-                            apt-get install -y git
-
-                            git config --global --add safe.directory $PWD
+                            pip install requests 
 
                             # python goes here
 
