@@ -146,7 +146,6 @@ spec:
                     sh( 
                         script: """
                             sudo Xvfb -ac \${DISPLAY} -screen 0 1280x1024x24 > /dev/null &
-                            sleep 3000
                         """
                     )
                 }
@@ -222,6 +221,12 @@ spec:
                                             \$GODOT_BIN --export-release "\${PLATFORM}" build/\${PLATFORM}/${fileName}
                                         """
                                     )
+                                    sh(
+                                        script: """
+                                            cd build/\${PLATFORM}
+                                            zip ../${fileName} 
+                                        """
+                                    )
                                 }
 
                             }
@@ -232,7 +237,7 @@ spec:
             post {
                 success {
                     archiveArtifacts(
-                        artifacts: "build/**/*",
+                        artifacts: "build/*.zip",
                         fingerprint: true
                     )
                 }
