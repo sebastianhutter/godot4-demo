@@ -92,6 +92,9 @@ spec:
     command:
     - cat
     tty: true
+    securityContext:
+      runAsUser: 0
+      allowPrivilegeEscalation: true
   volumes:
   - name: dev-snd
     hostPath:
@@ -209,6 +212,8 @@ spec:
                 container('github') {
                     sh(
                         script: '''
+                            [ip ]
+
                             sleep 3000
                             
                         '''
