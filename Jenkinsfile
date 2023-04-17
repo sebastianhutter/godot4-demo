@@ -88,7 +88,7 @@ spec:
         # reserve nvidia graphics card in host
         nvidia.com/gpu: 1
   - name: github
-    image: python:3.11
+    image: alpine
     command:
     - cat
     tty: true
@@ -177,7 +177,6 @@ spec:
                                     }
                                     sh(
                                         script: """
-                                            cat export_presets.cfg
                                             mkdir -p build/\${PLATFORM}
                                             \$GODOT_BIN --export-release "\${PLATFORM}" build/\${PLATFORM}/${fileName}
                                         """
