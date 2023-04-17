@@ -88,7 +88,7 @@ spec:
         # reserve nvidia graphics card in host
         nvidia.com/gpu: 1
   - name: github
-    image: alpine
+    image: python:3.11-slim
     command:
     - cat
     tty: true
@@ -209,7 +209,6 @@ spec:
                 container('github') {
                     sh(
                         script: '''
-                            // done
                             sleep 3000
                             
                         '''
