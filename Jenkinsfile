@@ -71,6 +71,8 @@ headers = dict(
 
 # Release details
 tag_name = os.getenv('TAG_NAME')
+print("que")
+print(tag_name)
 release_name = tag_name
 
 # create the release
